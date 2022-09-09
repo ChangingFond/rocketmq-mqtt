@@ -53,12 +53,17 @@ public class SubscribeProcessor implements UpstreamProcessor {
         List<MqttTopicSubscription> mqttTopicSubscriptions = payload.topicSubscriptions();
         Set<Subscription> subscriptions = new HashSet<>();
         for (MqttTopicSubscription mqttTopicSubscription : mqttTopicSubscriptions) {
-            String topicFilter = TopicUtils.normalizeTopic(mqttTopicSubscription.topicName());
+            String originTopic = mqttTopicSubscription.topicName();
+            String topicFilter = TopicUtils.getTopicFilter(originTopic);
             MqttTopic mqttTopic = TopicUtils.decode(topicFilter);
             firstTopicManager.checkFirstTopicIfCreated(mqttTopic.getFirstTopic());
             Subscription subscription = new Subscription();
             subscription.setTopicFilter(topicFilter);
             subscription.setQos(mqttTopicSubscription.qualityOfService().value());
+            if (TopicUtils.isShareTopic(originTopic)) {
+                subscription.setGroup(TopicUtils.getShareGroup(originTopic));
+                subscription.setType(Subscription.Type.SHARE);
+            }
             subscriptions.add(subscription);
         }
         if (subscriptionPersistManager == null) {

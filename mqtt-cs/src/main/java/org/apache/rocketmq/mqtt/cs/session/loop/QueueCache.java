@@ -188,6 +188,11 @@ public class QueueCache {
             callbackResult(pullResult, callBackResult);
             return DONE;
         }
+        if (subscription.isShare()) {
+            CompletableFuture<PullResult> pullResult = lmqQueueStore.popMessage(toFirstTopic(subscription), queue, subscription.getGroup(), count);
+            callbackResult(pullResult, callBackResult);
+            return DONE;
+        }
         CacheEntry cacheEntry = cache.getIfPresent(queue);
         if (cacheEntry == null) {
             StatUtil.addPv("NoPullCache", 1);

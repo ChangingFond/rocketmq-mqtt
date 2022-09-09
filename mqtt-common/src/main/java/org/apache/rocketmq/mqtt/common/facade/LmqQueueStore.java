@@ -38,6 +38,17 @@ public interface LmqQueueStore {
     CompletableFuture<StoreResult> putMessage(Set<String> queues, Message message);
 
     /**
+     * pop messages for share subscription
+     *
+     * @param firstTopic
+     * @param queue
+     * @param queueOffset
+     * @param count
+     * @return
+     */
+    CompletableFuture<PullResult> popMessage(String firstTopic, Queue queue, String consumerGroup, long count);
+
+    /**
      * pull messages
      *
      * @param firstTopic

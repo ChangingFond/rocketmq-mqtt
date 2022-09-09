@@ -49,7 +49,7 @@ public class UnSubscribeProcessor implements UpstreamProcessor {
         if (payload.topics() != null && !payload.topics().isEmpty()) {
             Set<Subscription> subscriptions = new HashSet<>();
             for (String topic : payload.topics()) {
-                String topicFilter = TopicUtils.normalizeTopic(topic);
+                String topicFilter = TopicUtils.getTopicFilter(topic);
                 MqttTopic mqttTopic = TopicUtils.decode(topicFilter);
                 firstTopicManager.checkFirstTopicIfCreated(mqttTopic.getFirstTopic());
                 Subscription subscription = new Subscription();

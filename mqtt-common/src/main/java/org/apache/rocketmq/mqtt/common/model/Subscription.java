@@ -23,6 +23,8 @@ import org.apache.rocketmq.mqtt.common.util.TopicUtils;
 public class Subscription {
     private String topicFilter;
     private int qos;
+    private String group;
+    private Type type = Type.BROADCAST;
 
     public Subscription() {
     }
@@ -66,6 +68,15 @@ public class Subscription {
         return TopicUtils.isP2pTopic(topicFilter);
     }
 
+    public boolean isShare() {
+        return type.equals(Type.SHARE);
+    }
+
+    public enum Type {
+        BROADCAST,
+        SHARE
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) { return true; }
@@ -95,6 +106,22 @@ public class Subscription {
 
     public void setQos(int qos) {
         this.qos = qos;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    public String getGroup() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group = group;
     }
 
     @Override

@@ -93,8 +93,15 @@ public class MqttSubscribeHandler implements MqttPacketHandler<MqttSubscribeMess
                 Set<Subscription> subscriptions = new HashSet<>(mqttTopicSubscriptions.size());
                 for (MqttTopicSubscription mqttTopicSubscription : mqttTopicSubscriptions) {
                     Subscription subscription = new Subscription();
+                    String originTopic = mqttTopicSubscription.topicName();
                     subscription.setQos(mqttTopicSubscription.qualityOfService().value());
-                    subscription.setTopicFilter(TopicUtils.normalizeTopic(mqttTopicSubscription.topicName()));
+                    if (TopicUtils.isShareTopic(originTopic)) {
+                        subscription.setType(Subscription.Type.SHARE);
+                        subscription.setGroup(TopicUtils.getShareGroup(originTopic));
+                        subscription.setTopicFilter(TopicUtils.getShareTopicFilter(originTopic));
+                    } else {
+                        subscription.setTopicFilter(TopicUtils.normalizeTopic(originTopic));
+                    }
                     subscriptions.add(subscription);
                 }
                 sessionLoop.addSubscription(ChannelInfo.getId(ctx.channel()), subscriptions);

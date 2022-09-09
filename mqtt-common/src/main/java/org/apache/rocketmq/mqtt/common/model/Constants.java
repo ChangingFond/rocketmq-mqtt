@@ -26,6 +26,7 @@ public class Constants {
 
     public static final String P2P = "/p2p/";
     public static final String RETRY = "/retry/";
+    public static final String SHARE = "$share";
 
     public static final String PROPERTY_NAMESPACE = "namespace";
     public static final String PROPERTY_ORIGIN_MQTT_TOPIC = "originMqttTopic";

@@ -92,6 +92,42 @@ public class TopicUtils {
         return topic != null && topic.startsWith(Constants.P2P);
     }
 
+    // share topic format: $share/{group}/{filter}
+    public static boolean isShareTopic(String topic) {
+        if (StringUtils.isEmpty(topic)) {
+            return false;
+        }
+        if (!topic.startsWith(Constants.SHARE)) {
+            return false;
+        }
+        String[] arr = topic.split(Constants.MQTT_TOPIC_DELIMITER);
+        return arr.length >= 2;
+    }
+
+    public static String getShareGroup(String topic) {
+        if (!isShareTopic(topic)) {
+            return null;
+        }
+        return topic.split(Constants.MQTT_TOPIC_DELIMITER)[1];
+    }
+
+    public static String getShareTopicFilter(String topic) {
+        if (!isShareTopic(topic)) {
+            return null;
+        }
+
+        topic = topic.substring(Constants.SHARE.length() + 1);
+        int index = topic.indexOf(Constants.MQTT_TOPIC_DELIMITER);
+        return normalizeTopic(topic.substring(index + 1));
+    }
+
+    public static String getTopicFilter(String topic) {
+        if (isShareTopic(topic)) {
+            return getShareTopicFilter(topic);
+        }
+        return normalizeTopic(topic);
+    }
+
     public static String getP2Peer(MqttTopic mqttTopic, String namespace) {
         if (mqttTopic.getSecondTopic() == null || mqttTopic.getFirstTopic() == null) {
             return null;
